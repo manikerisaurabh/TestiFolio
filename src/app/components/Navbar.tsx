@@ -3,13 +3,9 @@
 import React from 'react';
 import Image from 'next/image';
 import logoImage from '../../../public/logo.png';
-import Link from 'next/link';
-
-
-
+import NavbarProfile from './NavbarProfile';
 
 const Navbar = () => {
-
     return (
         <div className="fixed top-0 left-0 w-full z-50">
             <div className="flex justify-center">
@@ -25,15 +21,14 @@ const Navbar = () => {
 
                     <div>
                         <ul className="flex space-x-6 text-lg">
-                            <li className={`cursor-pointer hover:underline `}>Products</li>
+                            <li className="cursor-pointer hover:underline">Products</li>
                             <li className="cursor-pointer hover:underline">Features</li>
                             <li className="cursor-pointer hover:underline">Pricing</li>
                         </ul>
                     </div>
 
                     <div className="flex space-x-4">
-                        <Link href={'/dashboard'} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Lets Get Started</Link>
-
+                        <NavbarProfile />
                     </div>
                 </nav>
             </div>

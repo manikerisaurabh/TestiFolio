@@ -1,4 +1,4 @@
-import { Lacquer, Pacifico, Rubik, Doto, Anton } from "next/font/google";
+import { Lacquer, Pacifico, Rubik, Doto, Anton, Funnel_Display } from "next/font/google";
 export const pacifico = Pacifico({
     subsets: ['latin'],
     weight: '400'
@@ -22,4 +22,8 @@ export const doto = Doto({
 export const anton = Anton({
     weight: '400',
     subsets: ['latin'],
+});
+export const funnelDisplay = Funnel_Display({
+    weight: '400',
+    subsets: ['latin-ext'],
 });
