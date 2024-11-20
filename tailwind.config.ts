@@ -7,7 +7,7 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+  ],
   prefix: "",
   theme: {
     container: {
@@ -18,11 +18,17 @@ const config = {
       },
     },
     extend: {
+      backgroundColor: {
+        custom: 'rgb(21 23 25)', // Add your desired RGB value
+      },
+      backgroundOpacity: {
+        variable: 'var(--tw-bg-opacity)', // Use a CSS variable for opacity
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
+        // background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",

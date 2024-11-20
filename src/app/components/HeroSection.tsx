@@ -1,9 +1,10 @@
 import React from 'react'
-import { lacquer, pacifico } from './Navbar'
+import { lacquer, pacifico } from '../fonts/usedFonts'
+
 
 const HeroSection = () => {
     return (
-        <div className='flex flex-col gap-16 justify-center px-40 min-h-[90vh]'>
+        <div className='flex flex-col gap-16 justify-center px-40 min-h-[100vh]'>
             <div className='flex flex-col gap-12'>
                 <h1 className={`${lacquer.className} font-extrabold text-6xl text-center`}>Effortlessly gather testimonials from your customers.</h1>
                 <p className={`${pacifico.className} text-3xl`}>
