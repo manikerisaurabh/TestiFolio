@@ -1,11 +1,16 @@
 "use client";
 
 import React, { useState, useRef, FormEvent } from "react";
-import { funnelDisplay } from "../fonts/usedFonts";
+import { ibmPlexSans, robotoSlab } from "../fonts/usedFonts";
 import { Trash2 } from "lucide-react";
 import { Grip } from 'lucide-react';
 import { CirclePlus } from 'lucide-react';
+import { Video } from 'lucide-react';
+import { PencilLine } from 'lucide-react';
 
+
+import defaultImage from '../../../public/logo.png'
+import Image from "next/image";
 
 interface FormData {
     spaceName: string;
@@ -23,7 +28,7 @@ const AddNewSpace = () => {
         spaceLogo: null,
         headerTitle: "",
         customMessage: "",
-        questions: [""],
+        questions: ["Who are you / what are you working on", "How has [our product / service] helped you?"],
     });
 
     const handleInputChange = (
@@ -84,10 +89,12 @@ const AddNewSpace = () => {
     }
 
     return (
-        <div className="min-w-[100vh] min-h-[100vh] flex flex-row justify-center px-24 py-24 rounded">
-            <div className="bg-white min-w-[70%] rounded px-8">
+        <div className="min-w-[100vh] min-h-[100vh] flex flex-row justify-center px-24 py-32 rounded">
+            <div className="bg-white min-w-[60%] rounded px-8 py-8 border-r-2">
                 <div className="flex flex-col justify-center items-center">
-                    <h1 className={`${funnelDisplay.className} text-4xl font-bold`}>
+                    <h1 className={`${ibmPlexSans.className} text-4xl font-extrabold`}
+                        style={{ fontWeight: 900 }}
+                    >
                         Create a new Space
                     </h1>
                     <p>
@@ -223,7 +230,80 @@ const AddNewSpace = () => {
                     </div>
                 </form>
             </div>
-            <div className="bg-slate-600 min-w-[30%] rounded"></div>
+            <div className="bg-white min-w-[40%] rounded px-4 border-l-2">
+                <div
+                    className=" sticky max-w-48 rounded flex items-center justify-center py-1 mt-10"
+                    style={{
+                        backgroundColor: 'rgb(167 243 208)',
+                        color: 'rgb(5 150 105)',
+                        borderRadius: '20px',
+                    }}
+                >
+                    <p className="font-bold items-center">Live Preview</p>
+                </div>
+
+                <div className="flex flex-col px-8 py-16 justify-center border border-slate-400 rounded">
+                    {/* Logo Preview */}
+                    <div className="flex justify-center items-center mb-4">
+                        {imagePreview ? (
+                            <img
+                                src={imagePreview}
+                                alt="Selected Space Logo"
+                                className="h-24 w-24 object-contain rounded-full"
+                            />
+                        ) : (
+                            <Image src={defaultImage} height={80} width={80} alt="Default Space Logo" />
+                        )}
+                    </div>
+
+                    {/* Header Title Preview */}
+                    <div className="mb-4">
+                        <h1 className={`${robotoSlab.className} text-2xl font-extrabold text-center`}
+                            style={{ color: 'rgb(70 89 120)', fontWeight: 'bolder' }}
+                        >
+                            {formData.headerTitle || 'Header goes here...'}
+                        </h1>
+                    </div>
+
+                    {/* Custom Message Preview */}
+                    <div className="mb-4">
+                        <h2 className="text-center text-gray-600"
+                            style={{ color: 'rgb(112 125 134)' }}
+                        >
+                            {formData.customMessage || 'Your custom message goes here...'}
+                        </h2>
+                    </div>
+
+                    {/* Questions Preview */}
+                    <div className="px-4 flex gap-2 flex-col min-h-64">
+                        <h3 className="font-bold text-lg mb-2"
+                            style={{ color: 'rgb(85 89 95)', fontWeight: 'bolder' }}
+                        >QUESTIONS</h3>
+                        <div className="min-w-3 max-w-12 bg-black h-2 ml-1"
+                            style={{ backgroundColor: 'rgb(93, 93, 255)' }}
+                        ></div>
+                        <ul className="list-disc list-inside space-y-2">
+                            {formData.questions.map((question, index) => (
+                                <li key={index} className="text-gray-700 text-xl font-medium"
+                                    style={{ color: 'rgb(112 125 134)' }}
+                                >
+                                    {question || `Question ${index + 1}`}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div className="flex flex-col px-10 gap-2">
+                        <button className="px-2 py-2 rounded flex flex-row items-center justify-center gap-2 text-white"
+                            style={{ backgroundColor: 'rgb(93, 93, 255)', fontWeight: 700 }}
+                        > <Video /> Record a video</button>
+                        <button className="px-2 py-2 rounded flex flex-row items-center justify-center gap-6 text-white"
+                            style={{ backgroundColor: 'rgb(51 54 58)', fontWeight: 700 }}
+                        > <PencilLine /> Send a text</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     );
 };
