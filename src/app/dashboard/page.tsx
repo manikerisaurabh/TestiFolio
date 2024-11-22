@@ -10,21 +10,21 @@ const Dashboard = async () => {
     const userSession = (await cookieStore).get("userSession");
     console.log('session data : ', userSession)
     const user: User = userSession ? JSON.parse(userSession.value) : null;
-    const checkUserInDb = async () => {
-        try {
-            const res = await fetch('/api/check-user', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ userId: user.id })
-            });
-            const data = await res.json();
-            console.log({ data })
-        } catch (error) {
-            console.log("error while checking user in db : ", error)
-        }
-    }
+    // const checkUserInDb = async () => {
+    //     try {
+    //         const res = await fetch('/api/check-user', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({ userId: user.id })
+    //         });
+    //         const data = await res.json();
+    //         console.log({ data })
+    //     } catch (error) {
+    //         console.log("error while checking user in db : ", error)
+    //     }
+    // }
 
     return (
         <div className="min-h-screen px-8 py-8 sm:px-28 sm:py-28 lg:px-12 lg:py-12 xl:px-48 xl:py-48 text-white flex flex-col gap-12">
