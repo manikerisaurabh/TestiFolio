@@ -178,6 +178,7 @@ const AddNewSpace = () => {
 
             const data = await result.json();
             console.log("Response from server:", data);
+            toast.success("Congratulations! New space created successfully")
         } catch (error) {
             console.error("Error submitting form:", error);
         }
