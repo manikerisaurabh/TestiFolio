@@ -26,10 +26,12 @@ interface Space {
 interface FormData {
     message: string;
     imageUrl: string;
+    rating: number;
     userName: string;
     userEmail: string;
     userImage: string;
-    permissionToShare: boolean
+    permissionToShare: boolean;
+    spaceName: string
 }
 const Page = () => {
 
@@ -38,12 +40,20 @@ const Page = () => {
     const [userId, rawSpaceName] = pathSegments;
     const spaceName = rawSpaceName.replace(/-/g, " ");
     const [spaceInfo, setSpaceInfo] = useState<Space>();
-    const [rating, setRating] = useState<number>(5); // Initialize rating
     const [resource, setResource] = useState<CloudinaryUploadWidgetInfo | string>();
     const [userResource, setUserResource] = useState<CloudinaryUploadWidgetInfo | string>();
-    const [showAdd, setshowAdd] = useState<boolean>(false)
+    const [showAdd, setshowAdd] = useState<boolean>(true)
 
-    const [formData, setFormData] = useState<FormData>();
+    const [formData, setFormData] = useState<FormData>({
+        message: "",
+        imageUrl: "",
+        rating: 5,
+        userName: "",
+        userEmail: "",
+        userImage: "",
+        permissionToShare: false,
+        spaceName: spaceName
+    });
     // Fetch space information
     const getSpaceInfo = async () => {
         try {
@@ -61,6 +71,23 @@ const Page = () => {
         }
     };
 
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value, type } = event.target;
+        console.log(name)
+        console.log(value)
+        console.log(type)
+        if (type === "checkbox") {
+            const { checked } = event.target as HTMLInputElement; // Explicit cast
+            console.log(checked)
+            setFormData((prev) => ({
+                ...prev,
+                [name]: checked,
+            }));
+            return;
+        }
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+
     useEffect(() => {
         getSpaceInfo();
     }, []);
@@ -75,12 +102,7 @@ const Page = () => {
 
                 setFormData((prev) => ({
                     ...prev,
-                    imageUrl: url,
-                    message: prev?.message || "", // Provide a default value for message
-                    userName: prev?.userName || "", // Provide a default value for userName
-                    userEmail: prev?.userEmail || "", // Provide a default value for userEmail
-                    userImage: prev?.userImage || "", // Provide a default value for userImage
-                    permissionToShare: prev?.permissionToShare || false, // Provide a default value for permissionToShare
+                    imageUrl: url
                 }));
             }
         }
@@ -96,12 +118,7 @@ const Page = () => {
 
                 setFormData((prev) => ({
                     ...prev,
-                    imageUrl: prev?.imageUrl || "",
-                    message: prev?.message || "", // Provide a default value for message
-                    userName: prev?.userName || "", // Provide a default value for userName
-                    userEmail: prev?.userEmail || "", // Provide a default value for userEmail
-                    userImage: url, // Provide a default value for userImage
-                    permissionToShare: prev?.permissionToShare || false, // Provide a default value for permissionToShare
+                    userImage: url,
                 }));
             }
         }
@@ -110,12 +127,34 @@ const Page = () => {
 
     // Update rating value
     const changeRating = (newRating: number) => {
-        setRating(newRating);
-        console.log("New Rating:", newRating);
+        setFormData((prev) => ({
+            ...prev,
+            rating: newRating
+        }))
+
     };
 
     const handleBtnClick = () => {
         setshowAdd(true)
+    }
+
+    const handleSubmiteTestimonial = async () => {
+        console.log('this is formdata :', formData)
+        try {
+            const response = await fetch('/api/testimonial/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+
+            const data = await response.json();
+            console.log({ data })
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -130,7 +169,7 @@ const Page = () => {
             </div>
 
             {/* Main Content */}
-            {showAdd ?
+            {showAdd == false ?
                 <div className="flex flex-col items-center gap-8 w-full max-w-lg mt-16">
                     {/* Space Logo */}
                     <div className="w-32 h-32 rounded-full overflow-hidden">
@@ -187,9 +226,9 @@ const Page = () => {
                 </div>
                 :
                 <div className="border rounded px-12 py-10 mt-12 shadow-lg"
-                    style={{ boxShadow: '5px 8px 12px 12px rgba(0, 0, 0, 0.25)' }}
+                    style={{ boxShadow: '5px 8px 12px 12px rgba(0, 0, 0, 0.25)', borderRadius: '20px' }}
                 >
-                    <div className="sm:max-w-[425px] bg-white text-black rounded" style={{ borderRadius: '10px' }}>
+                    <div className=" flex flex-col gap-4 sm:max-w-[425px] bg-white text-black rounded" style={{ borderRadius: '10px' }}>
                         <div className="flex flex-col items-center">
                             <h2 className="text-xl font-bold">Write a testimonial for {spaceInfo?.headerTitle}</h2>
                             <img src={spaceInfo?.spaceLogo} alt="app-logo" height="80" width="80" />
@@ -209,7 +248,7 @@ const Page = () => {
 
                         <div className="flex flex-1 flex-col">
                             <StarRatings
-                                rating={rating}
+                                rating={formData.rating}
                                 starRatedColor="gold"
                                 changeRating={changeRating}
                                 numberOfStars={5}
@@ -221,6 +260,9 @@ const Page = () => {
                                 className="border border-slate-600 rounded mt-4 p-2"
                                 rows={4}
                                 placeholder="Write your thoughts..."
+                                value={formData?.message}
+                                name="message"
+                                onChange={handleInputChange}
                             ></textarea>
                             <div className="flex flex-row gap-4 mt-6 justify-between">
                                 <div className="flex flex-col gap-6">
@@ -267,8 +309,11 @@ const Page = () => {
                                 <label htmlFor="userName" className="text-gray-600">Your Name <span className="text-red-600 font-bold">*</span></label>
                                 <input
                                     id="userName"
+                                    name="userName"
                                     type="text"
                                     className="border border-slate-700 rounded w-full mt-2 p-2"
+                                    value={formData?.userName}
+                                    onChange={handleInputChange}
                                 />
                             </div>
 
@@ -277,11 +322,14 @@ const Page = () => {
                                 <input
                                     id="userEmail"
                                     type="email"
+                                    name="userEmail"
                                     className="border border-slate-700 rounded w-full mt-2 p-2"
+                                    value={formData?.userEmail}
+                                    onChange={handleInputChange}
                                 />
                             </div>
 
-                            <div className="mt-4">
+                            <div className="mt-4 flex flex-col gap-4">
                                 <label htmlFor="userImage" className="text-gray-600">Upload Your Image</label>
                                 <div className="flex flex-row items-center gap-4 mt-2">
                                     <div className="min-h-16 min-w-16 rounded-full flex items-center justify-center">
@@ -292,7 +340,8 @@ const Page = () => {
                                                 className="rounded-full h-16 w-16 object-cover"
                                             />
                                         ) : (
-                                            <span className="min-h-16 min-w-16 bg-slate-500"></span>
+                                            <span className="min-h-16 min-w-16 bg-slate-400"
+                                                style={{ borderRadius: '50%' }}></span>
                                         )}
                                     </div>
                                     <CldUploadWidget
@@ -321,17 +370,25 @@ const Page = () => {
                                         }}
                                     </CldUploadWidget>
                                 </div>
-                                <div>
-                                    <input type="checkbox" name="" id="" />
-                                    <span>                                    I give permission to use this testimonial across social channels and other marketing efforts
+                                <div className="flex flex-row gap-4">
+                                    <input type="checkbox" onChange={handleInputChange} name="permissionToShare" id="" />
+                                    <span className="text-gray-600">I give permission to use this testimonial across social channels and other marketing efforts
                                     </span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="mt-6 text-center">
-                            <button className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-950">
-                                Save
+                        <div className="mt-6 text-center items-end justify-end flex flex-row gap-5">
+                            <button
+                                className="border text-gray-600 rounded px-3 py-1 hover:text-gray-800 font-semibold hover:bg-gray-300"
+                                onClick={() => { setshowAdd(false) }}>
+                                Cancel
+                            </button>
+                            <button className=" text-white px-3 py-1 rounded"
+                                style={{ backgroundColor: 'rgb(93 93 255)' }}
+                                onClick={handleSubmiteTestimonial}
+                            >
+                                Send
                             </button>
                         </div>
                     </div>
