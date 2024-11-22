@@ -15,6 +15,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import defaultImage from '../../../public/logo.png'
 import Image from "next/image";
+import { User } from "../components/NavbarProfile";
+import Navbar from "../components/Navbar";
 
 export interface CloudinaryUploadResponse {
     access_mode: string; // Access mode (e.g., "public")
@@ -44,7 +46,7 @@ export interface CloudinaryUploadResponse {
 }
 
 
-interface FormData {
+export interface FormData {
     spaceName: string;
     spaceLogo: string | null;
     headerTitle: string;
@@ -53,6 +55,8 @@ interface FormData {
 }
 
 const AddNewSpace = () => {
+    const [user, setUser] = useState<User | null>(null);
+
     const [resource, setResource] = useState<CloudinaryUploadWidgetInfo | string>();
 
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -66,6 +70,13 @@ const AddNewSpace = () => {
         questions: ["Who are you / what are you working on", "How has [our product / service] helped you?"],
     });
 
+
+    useEffect(() => {
+        const storedUser = sessionStorage.getItem("userSession");
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
 
     useEffect(() => {
 
@@ -176,7 +187,7 @@ const AddNewSpace = () => {
 
     return (
         <div className="min-w-[100vh] min-h-[100vh] flex flex-row justify-center px-24 py-32 rounded">
-
+            <Navbar />
             <div className="bg-white min-w-[60%] rounded px-8 py-8 border-r-2">
 
 
@@ -213,7 +224,7 @@ const AddNewSpace = () => {
                         className="text-slate-500"
                         type="text"
                         readOnly
-                        value={`Public url will be : saurabh/${formData.spaceName.replace(/\s+/g, '-')}`}
+                        value={`Public url will be : saurabh/${user?.id}/${formData.spaceName.replace(/\s+/g, '-')}`}
                     />
 
                     {/* File Upload with Image Preview */}

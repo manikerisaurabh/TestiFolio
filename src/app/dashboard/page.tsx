@@ -4,6 +4,7 @@ import OverviewCard from '../components/OverviewCard';
 import CreateNewSpace from '../components/CreateNewSpace';
 import { cookies } from "next/headers";
 import { User } from '../components/NavbarProfile';
+import Navbar from '../components/Navbar';
 
 const Dashboard = async () => {
     const cookieStore = cookies();
@@ -28,6 +29,7 @@ const Dashboard = async () => {
 
     return (
         <div className="min-h-screen px-8 py-8 sm:px-28 sm:py-28 lg:px-12 lg:py-12 xl:px-48 xl:py-48 text-white flex flex-col gap-12">
+            <Navbar />
             <div className="flex flex-col gap-6">
                 <strong className={`${rubik.className} font-extrabold text-2xl sm:text-3xl lg:text-4xl`}>Overview</strong>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
