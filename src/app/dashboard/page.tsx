@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { rubik } from '../fonts/usedFonts';
 import OverviewCard from '../components/OverviewCard';
@@ -6,26 +7,13 @@ import { cookies } from "next/headers";
 import { User } from '../components/NavbarProfile';
 import Navbar from '../components/Navbar';
 
+
+
 const Dashboard = async () => {
     const cookieStore = cookies();
     const userSession = (await cookieStore).get("userSession");
     console.log('session data : ', userSession)
     const user: User = userSession ? JSON.parse(userSession.value) : null;
-    // const checkUserInDb = async () => {
-    //     try {
-    //         const res = await fetch('/api/check-user', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify({ userId: user.id })
-    //         });
-    //         const data = await res.json();
-    //         console.log({ data })
-    //     } catch (error) {
-    //         console.log("error while checking user in db : ", error)
-    //     }
-    // }
 
     return (
         <div className="min-h-screen px-8 py-8 sm:px-28 sm:py-28 lg:px-12 lg:py-12 xl:px-48 xl:py-48 text-white flex flex-col gap-12">
@@ -40,7 +28,7 @@ const Dashboard = async () => {
             </div>
             <div className='flex flex-col gap-6'>
                 <strong className={`${rubik.className} font-extrabold text-2xl sm:text-3xl lg:text-4xl`}>Spaces</strong>
-                <CreateNewSpace />
+                <CreateNewSpace userId={user.id} />
             </div>
         </div>
     );

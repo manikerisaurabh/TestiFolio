@@ -30,6 +30,14 @@ const testiMonialSchema = new mongoose.Schema({
     spaceId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Space",
+    },
+    isLiked: {
+        type: Boolean,
+        default: false
+    },
+    testimonialType: {
+        type: String,
+        required: true
     }
 });
 

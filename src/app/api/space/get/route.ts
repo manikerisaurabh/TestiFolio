@@ -1,0 +1,19 @@
+import Space from "@/app/models/space.model";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(req: NextRequest) {
+    try {
+        const body = await req.json();
+        const spaces = await Space.find({ owner: body.userId });
+
+        if (!spaces) {
+            return NextResponse.json({ message: "No space available" });
+        }
+
+        return NextResponse.json(spaces);
+    } catch (error) {
+        console.log(error);
+        return NextResponse.json({ error: "Internal Server Error " }, { status: 500 });
+    }
+
+}

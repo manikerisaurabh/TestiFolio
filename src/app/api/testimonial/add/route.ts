@@ -22,7 +22,8 @@ export async function POST(req: NextRequest) {
             userEmail: body.userEmail,
             userImage: body.userImage,
             permissionToShare: body.permissionToShare,
-            spaceId: space._id
+            spaceId: space._id,
+            testimonialType: body.testimonialType
         });
         await newTestimonial.save();
         return NextResponse.json({ success: "new testimonial submited" }, { status: 201 })

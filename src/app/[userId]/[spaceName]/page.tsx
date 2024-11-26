@@ -31,9 +31,10 @@ interface FormData {
     userEmail: string;
     userImage: string;
     permissionToShare: boolean;
-    spaceName: string
+    spaceName: string;
+    testimonialType: string
 }
-const Page = () => {
+const WriteNewTestimonial = () => {
 
     const pathname = usePathname();
     const pathSegments = pathname.split("/").filter(Boolean);
@@ -52,7 +53,8 @@ const Page = () => {
         userEmail: "",
         userImage: "",
         permissionToShare: false,
-        spaceName: spaceName
+        spaceName: spaceName,
+        testimonialType: "text"
     });
     // Fetch space information
     const getSpaceInfo = async () => {
@@ -400,4 +402,4 @@ const Page = () => {
     );
 };
 
-export default Page; 
+export default WriteNewTestimonial; 
