@@ -8,70 +8,87 @@ interface TestimonialCardProps {
 }
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
-
     const addToLike = async () => {
         try {
             const response = await fetch('/api/testimonial/add-to-liked', {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ id: testimonial._id }),
             });
             if (!response.ok) {
-                console.log("error  while adding into liked")
+                console.log('Error while adding into liked');
             }
-
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
+    };
+
     return (
-        <div className="flex flex-col gap-8 w-full">
-            {/* Text and Heart Icon */}
+        <div className="flex flex-col gap-6">
+            {/* Header Section */}
             <div className="flex justify-between items-center">
-                <span className="text-white font-medium">Text</span>
+                <span className="text-white font-medium text-sm sm:text-base">
+                    Testimonial
+                </span>
                 <button
                     className="text-red-500 hover:text-red-600 focus:outline-none"
                     aria-label="Like Testimonial"
                     onClick={addToLike}
                 >
-                    {testimonial.isLiked == true ? <Heart fill='red' /> : <Heart />}
-
+                    {testimonial.isLiked ? <Heart fill="red" /> : <Heart />}
                 </button>
             </div>
 
-            {/* Star Ratings */}
+            {/* Rating and Message */}
             <div>
                 <StarRatings
                     rating={parseInt(testimonial.rating)}
                     starRatedColor="gold"
                     numberOfStars={5}
-                    starDimension="20px"
+                    starDimension="18px"
                     starSpacing="3px"
                 />
-                <h3>{testimonial.message}</h3>
-                <div className='flex justify-center items-center'>
-                    {testimonial.imageUrl && (
-                        <img src={testimonial.imageUrl} alt="image" className='items-center' height={250} width={250} />
-                    )}
+                <p className="text-gray-300 mt-2 text-sm sm:text-base">
+                    {testimonial.message}
+                </p>
+            </div>
+
+            {/* Image Section */}
+            {testimonial.imageUrl && (
+                <div className="flex justify-center mt-4">
+                    <img
+                        src={testimonial.imageUrl}
+                        alt="Testimonial"
+                        className="max-w-full h-auto rounded-lg"
+                        style={{ maxHeight: '200px' }}
+                    />
                 </div>
-                <div className="flex flex-col sm:flex-row lg:gap-46 items-center justify-between gap-4">
+            )}
+
+            {/* User Details */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-between">
+                <div className="flex items-center gap-4">
+                    {testimonial.userImage && (
+                        <img
+                            src={testimonial.userImage}
+                            alt="User"
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
+                        />
+                    )}
                     <div>
-                        <h2>Name</h2>
-                        <span>{testimonial.userName}</span>
-                        {testimonial.userImage && (
-                            <img
-                                src={testimonial.userImage}
-                                alt="user image"
-                                className="w-12 h-12 rounded-full object-cover"
-                            />
-                        )}
+                        <h3 className="text-white text-sm sm:text-base">Name</h3>
+                        <p className="text-gray-400 text-xs sm:text-sm">
+                            {testimonial.userName}
+                        </p>
                     </div>
-                    <div>
-                        <h2>Email</h2>
-                        <span>{testimonial.userEmail}</span>
-                    </div>
+                </div>
+                <div>
+                    <h3 className="text-white text-sm sm:text-base">Email</h3>
+                    <p className="text-gray-400 text-xs sm:text-sm">
+                        {testimonial.userEmail}
+                    </p>
                 </div>
             </div>
         </div>

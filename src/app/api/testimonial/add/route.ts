@@ -5,10 +5,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     try {
+        console.log('api reached at testimonial/add')
         await connectToDb();
         const body = await req.json();
 
-        const space = await Space.findOne({ spaceName: body.spaceName });
+        const space = await Space.findOne({ _id: body.spaceName });
 
         if (!space) {
             return NextResponse.json({ error: "NO space found " }, { status: 404 });

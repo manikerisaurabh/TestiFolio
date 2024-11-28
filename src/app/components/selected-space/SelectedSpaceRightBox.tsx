@@ -1,30 +1,33 @@
 import { Testimonial } from '@/app/space/[space-name]/page';
 import React from 'react';
 import TestimonialCard from './TestimonialCard';
+import NoTestimonialCard from './NoTestimonialCard';
 
 interface SelectedSpaceRightBoxProps {
     testimonials: Testimonial[];
-
+    userId: string | undefined;
+    spaceId: string;
 }
 
-
-const SelectedSpaceRightBox: React.FC<SelectedSpaceRightBoxProps> = ({ testimonials }) => {
-    console.log({ testimonials })
+const SelectedSpaceRightBox: React.FC<SelectedSpaceRightBoxProps> = ({ testimonials, userId, spaceId }) => {
     return (
-        <div className="min-w-16 w-full rounded flex flex-wrap gap-12 p-12 justify-center items-center ">
-            {testimonials.map((testimonial, index) => (
-                <div
-                    key={index}
-                    className="w-[100vh]  flex flex-row justify-center items-center"
-                >
-                    <div
-                        className="w-full bg-slate-600 px-8 py-12 rounded"
-                        style={{ backgroundColor: 'rgb(37 40 44)' }}
-                    >
-                        <TestimonialCard testimonial={testimonial} />
-                    </div>
+        <div className="w-full flex flex-col gap-6 p-4 sm:p-6 lg:p-12 lg:mt-96 justify-center items-center">
+            {testimonials.length === 0 ? (
+                <NoTestimonialCard userId={userId} spaceId={spaceId} />
+            ) : (
+                <div className="w-full flex flex-col gap-6">
+                    {testimonials.map((testimonial, index) => (
+                        <div
+                            key={index}
+                            className="w-full flex flex-col justify-center items-center"
+                        >
+                            <div className="w-full max-w-4xl bg-gray-800 px-6 py-8 rounded-lg">
+                                <TestimonialCard testimonial={testimonial} />
+                            </div>
+                        </div>
+                    ))}
                 </div>
-            ))}
+            )}
         </div>
     );
 };

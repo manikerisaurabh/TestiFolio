@@ -1,18 +1,14 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client";
-
-import React, { useContext, useEffect, useState } from "react";
+"use client"
+import React, { useEffect, useState } from "react";
 import Navbar from "@/app/components/Navbar";
 import SelectedSpaceTopBar from "@/app/components/selected-space/SelectedSpaceTopBar";
 import SelectedSpaceSidebar from "@/app/components/selected-space/SelectedSpaceSidebar";
-import { SidebarContentType } from "@/app/components/selected-space/SelectedSpaceSidebar"; // Ensure this is exported
-import { ClientSideUserContext } from "@/context/ClientSideUserProvider";
-import { usePathname } from 'next/navigation'
+import { SidebarContentType } from "@/app/components/selected-space/SelectedSpaceSidebar";
+import { usePathname } from "next/navigation";
 import { Space } from "@/app/components/CreateNewSpace";
 import SelectedSpaceRightBox from "@/app/components/selected-space/SelectedSpaceRightBox";
-
-
+import { User } from "@/app/components/NavbarProfile";
 
 export interface Testimonial {
     imageUrl: string;
@@ -28,111 +24,105 @@ export interface Testimonial {
     testimonialType: string;
 }
 
-
 const SpaceInformation: React.FC = () => {
-    const clientSideUserContext = useContext(ClientSideUserContext);
+    const [user, setUser] = useState<User>();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const pathname = usePathname();
     const pathSegments = pathname.split("/").filter(Boolean);
     const [space, spaceId] = pathSegments;
-    const [selectedContent, setSelectedContent] = useState<SidebarContentType | null>(null);
+    const [selectedContent, setSelectedContent] =
+        useState<SidebarContentType | null>(null);
     const [currentSpace, setCurrentSpace] = useState<Space>({
-        spaceName: '',
-        spaceLogo: '',
-        customMessage: '',
-        headerTitle: '',
-        owner: '',
-        _id: '',
-        questions: []
+        spaceName: "",
+        spaceLogo: "",
+        customMessage: "",
+        headerTitle: "",
+        owner: "",
+        _id: "",
+        questions: [],
     });
-    const [testimonials, setTestimonials] = useState<Testimonial[]>()
-    const [filteredTestimonials, setFilteredTestimonials] = useState<Testimonial[]>()
-    // Ensure context exists before accessing its properties
-    if (!clientSideUserContext) {
-        return <div>Error: User context not available.</div>;
-    }
+    const [testimonials, setTestimonials] = useState<Testimonial[]>();
+    const [filteredTestimonials, setFilteredTestimonials] =
+        useState<Testimonial[]>();
 
-    const { user } = clientSideUserContext;
-
-
-
-    const getAllTestimonials = async () => {
+    const getAllTestimonials = async (userId: string) => {
         try {
+            setIsLoading(true);
             const res = await fetch(`/api/testimonial/get`, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ userId: user?.id, spaceId: spaceId }),
-                cache: 'no-store', // Ensures it fetches fresh data each time
+                body: JSON.stringify({ userId: userId, spaceId: spaceId }),
+                cache: "no-store",
             });
 
             if (!res.ok) {
                 throw new Error(`Failed to fetch testimonials : ${res.statusText}`);
             }
             const data = await res.json();
-            console.log(data)
             setCurrentSpace(data.space);
-            setTestimonials(data.testimonials)
-
+            filterTestimonials(data.testimonials);
+            setTestimonials(data.testimonials);
         } catch (error) {
-            console.error('Error fetching spaces:', error);
-            return [];
+            console.error("Error fetching spaces:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const handleContentSelection = (content: SidebarContentType) => {
-        filterTestimonials(content.label)
+        filterTestimonials(content.label);
         setSelectedContent(content);
     };
 
     const filterTestimonials = (filterType: string) => {
-        console.log({ filterType })
         if (filterType === "Text") {
-            const data = testimonials?.filter((testimonial) => testimonial.testimonialType == "text");
+            const data = testimonials?.filter(
+                (testimonial) => testimonial.testimonialType === "text"
+            );
             setFilteredTestimonials(data);
         } else if (filterType === "Video") {
-            setFilteredTestimonials(testimonials?.filter((testimonial) => testimonial.testimonialType == "video"));
+            setFilteredTestimonials(
+                testimonials?.filter(
+                    (testimonial) => testimonial.testimonialType === "video"
+                )
+            );
         } else if (filterType === "Liked") {
-            const data = (testimonials?.filter(testimonial => testimonial.isLiked == true));
+            const data = testimonials?.filter(
+                (testimonial) => testimonial.isLiked === true
+            );
             setFilteredTestimonials(data);
         } else {
             setFilteredTestimonials(testimonials);
         }
     };
 
+    const getUser = async () => {
+        const userData = sessionStorage.getItem("userSession");
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+    };
 
-    // if (!selectedSpace) {
-    //     return <div>No space selected.</div>;
-    // }
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useEffect(() => {
+        getUser();
+    }, []);
+
     useEffect(() => {
         if (user) {
-            console.log({ user })
-            console.log(user.id);
-            getAllTestimonials();
+            getAllTestimonials(user.id);
         } else {
-            console.log("No user found in session.");
+            getUser();
         }
     }, [user]);
-
-    useEffect(() => {
-        console.log({ currentSpace });
-        console.log(testimonials)
-    }, [testimonials])
-
-
-
-
 
     return (
         <div className="text-white">
             <div className="mb-28">
                 <Navbar />
             </div>
-            <div
-                className=" bg-slate-700 w-full"
-                style={{ height: "1.2px" }}
-            ></div>
+            <div className=" bg-slate-700 w-full" style={{ height: "1.2px" }}></div>
             <SelectedSpaceTopBar
                 spaceName={currentSpace.spaceName}
                 spaceLogo={currentSpace.spaceLogo}
@@ -143,31 +133,36 @@ const SpaceInformation: React.FC = () => {
                 className=" bg-slate-700 w-full sticky top-28"
                 style={{ height: "1.2px" }}
             ></div>
-            <div className="flex flex-row h-96 sticky top-16 ">
-                <div>                    <SelectedSpaceSidebar
-                    onContentSelect={handleContentSelection}
-                    selectedContent={selectedContent}
-                />
-                    {selectedContent?.label}
+            <div className="flex flex-col lg:flex-row lg:h-96 lg:top-16">
+                <div className="border-b-2 lg:border-b-0 lg:border-r-2 w-full lg:w-auto">
+                    <SelectedSpaceSidebar
+                        onContentSelect={handleContentSelection}
+                        selectedContent={selectedContent}
+                        spaceId={currentSpace._id}
+                    />
                 </div>
-                <div
-                    className=" bg-slate-700 w-full sticky top-32"
-                    style={{ width: "1.2px" }}
-                ></div>
-                <div>
-                    {filteredTestimonials &&
-                        <>
-                            {filterTestimonials.length > 0 ?
-                                <SelectedSpaceRightBox testimonials={filteredTestimonials} />
-                                :
-                                <span className="text-white">no testimonial found</span>
-                            }
-                        </>
-                    }
-
+                <div className="flex items-center justify-center w-full">
+                    {isLoading ? (
+                        <div className="w-full flex flex-col items-center">
+                            {/* Skeleton Loader */}
+                            <div className="animate-pulse space-y-4 w-3/4">
+                                <div className="h-8 bg-gray-600 rounded"></div>
+                                <div className="h-6 bg-gray-600 rounded"></div>
+                                <div className="h-8 bg-gray-600 rounded"></div>
+                            </div>
+                        </div>
+                    ) : (
+                        filteredTestimonials && (
+                            <SelectedSpaceRightBox
+                                testimonials={filteredTestimonials}
+                                userId={user?.id}
+                                spaceId={spaceId}
+                            />
+                        )
+                    )}
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
 

@@ -44,6 +44,7 @@ const WriteNewTestimonial = () => {
     const [resource, setResource] = useState<CloudinaryUploadWidgetInfo | string>();
     const [userResource, setUserResource] = useState<CloudinaryUploadWidgetInfo | string>();
     const [showAdd, setshowAdd] = useState<boolean>(true)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const [formData, setFormData] = useState<FormData>({
         message: "",
@@ -143,6 +144,7 @@ const WriteNewTestimonial = () => {
     const handleSubmiteTestimonial = async () => {
         console.log('this is formdata :', formData)
         try {
+            setIsLoading(true)
             const response = await fetch('/api/testimonial/add', {
                 method: 'POST',
                 headers: {
@@ -156,6 +158,8 @@ const WriteNewTestimonial = () => {
 
         } catch (error) {
             console.log(error)
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -167,7 +171,7 @@ const WriteNewTestimonial = () => {
             {/* Header */}
             <div className="flex flex-row justify-start items-center fixed left-0 gap-4 w-full max-w-6xl">
                 <Image src={appLogo} height={60} width={60} alt="App Logo" />
-                <strong className="text-slate-600 text-3xl md:text-4xl">Testimonial</strong>
+                <strong className="text-slate-600 text-3xl md:text-4xl">TestiFolio</strong>
             </div>
 
             {/* Main Content */}
@@ -386,12 +390,33 @@ const WriteNewTestimonial = () => {
                                 onClick={() => { setshowAdd(false) }}>
                                 Cancel
                             </button>
-                            <button className=" text-white px-3 py-1 rounded"
+                            {/* <button className=" text-white px-3 py-1 rounded"
                                 style={{ backgroundColor: 'rgb(93 93 255)' }}
                                 onClick={handleSubmiteTestimonial}
                             >
                                 Send
+                            </button> */}
+
+                            <button
+                                disabled={isLoading}
+                                onClick={handleSubmiteTestimonial}
+                                type="submit"
+                                className={`relative rounded px-3 py-1  font-bold text-1xl border  text-gray-600 hover:text-gray-800 hover:bg-gray-300  transition-all
+        ${isLoading ? 'cursor-not-allowed ' : ''}`}
+                            >
+
+                                {isLoading && (
+                                    <div
+                                        className="absolute inset-0 flex items-center justify-center bg-opacity-50"
+                                    >
+                                        <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                                    </div>
+                                )}
+                                <span className={`${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+                                    Send
+                                </span>
                             </button>
+
                         </div>
                     </div>
                 </div>

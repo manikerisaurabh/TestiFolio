@@ -29,7 +29,7 @@ import { CirclePlus } from 'lucide-react';
 import Profile from './Profile';
 import Link from 'next/link';
 import SpaceCard from './SpaceCard';
-
+import { currentUser } from '@clerk/nextjs/server';
 export interface Space {
     customMessage: string;
     headerTitle: string;
@@ -41,11 +41,10 @@ export interface Space {
 
 }
 
-interface CreateNewSpaceProps {
-    userId: string;
-}
+
 
 const getAllSpace = async (userId: string): Promise<Space[]> => {
+
     try {
         const res = await fetch(`http://localhost:3000/api/space/get`, {
             method: 'POST',
@@ -68,8 +67,10 @@ const getAllSpace = async (userId: string): Promise<Space[]> => {
     }
 };
 
-const CreateNewSpace: React.FC<CreateNewSpaceProps> = async ({ userId }) => {
-    const spaces: Space[] = await getAllSpace(userId);
+const CreateNewSpace = async () => {
+    const user = await currentUser();
+
+    const spaces: Space[] = await getAllSpace(user?.id ? user.id : "");
 
     if (spaces.length > 0) {
         return (

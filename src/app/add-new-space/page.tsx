@@ -17,6 +17,7 @@ import defaultImage from '../../../public/logo.png'
 import Image from "next/image";
 import { User } from "../components/NavbarProfile";
 import Navbar from "../components/Navbar";
+import { useRouter } from "next/navigation";
 
 export interface CloudinaryUploadResponse {
     access_mode: string; // Access mode (e.g., "public")
@@ -55,11 +56,14 @@ export interface FormData {
 }
 
 const AddNewSpace = () => {
+    const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
 
     const [resource, setResource] = useState<CloudinaryUploadWidgetInfo | string>();
 
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [formData, setFormData] = useState<FormData>({
@@ -146,11 +150,11 @@ const AddNewSpace = () => {
     };
 
     const checkFormValidation = () => {
+        let errorCount = 0;
         if (formData.customMessage == "") {
-            console.log("in check form calid")
             toast.error('Custom Message should be enter', {
                 position: "top-right",
-                autoClose: 5000,
+                autoClose: 3000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -159,28 +163,84 @@ const AddNewSpace = () => {
                 theme: "light",
                 transition: Bounce,
             });
+            errorCount++;
+        }
+        if (formData.headerTitle == "") {
+            toast.error('Header title is required', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+            errorCount++;
 
         }
+        if (formData.spaceLogo == "" || formData.spaceLogo == null) {
+            toast.error('Logo for your space should be selected', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+            errorCount++;
+
+        }
+        if (formData.customMessage == "") {
+            toast.error('Please eneter custom message', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+            errorCount++;
+
+        }
+        if (errorCount > 0) {
+            return false;
+        }
+        return true;
     }
 
     const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        checkFormValidation();
-        toast.success("wow skdbc")
-        try {
-            const result = await fetch('/api/add-new-space', {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
+        if (checkFormValidation()) {
+            try {
+                setIsLoading(true)
+                const result = await fetch('/api/add-new-space', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                if (!result.ok) {
+                    toast.error("Got some error while creating space try again..")
+                }
 
-            const data = await result.json();
-            console.log("Response from server:", data);
-            toast.success("Congratulations! New space created successfully")
-        } catch (error) {
-            console.error("Error submitting form:", error);
+                const data = await result.json();
+                console.log("Response from server:", data);
+                toast.success("Congratulations! New space created successfully")
+                router.push('/dashboard')
+            } catch (error) {
+                console.error("Error submitting form:", error);
+            } finally {
+                setIsLoading(false)
+            }
         }
     };
 
@@ -230,7 +290,7 @@ const AddNewSpace = () => {
 
                     {/* File Upload with Image Preview */}
                     <div className="flex flex-col justify-start mb-4">
-                        <label htmlFor="spaceLogo">Space Logo</label>
+                        <label htmlFor="spaceLogo">Space Logo <span className="text-red-700 font-bold">*</span></label>
                         <div className="flex items-center gap-4 mt-2">
                             <span
                                 className="h-24 w-24 border border-slate-300 rounded-full flex items-center justify-center bg-gray-100"
@@ -297,7 +357,7 @@ const AddNewSpace = () => {
 
                     {/* Header Title */}
                     <div className="flex flex-col justify-start mb-4">
-                        <label htmlFor="headerTitle">Header Title</label>
+                        <label htmlFor="headerTitle">Header Title <span className="text-red-700 font-bold">*</span></label>
                         <input
                             type="text"
                             id="headerTitle"
@@ -311,7 +371,7 @@ const AddNewSpace = () => {
 
                     {/* Custom Message */}
                     <div className="flex flex-col justify-start mb-4">
-                        <label htmlFor="customMessage">Your Custom Message</label>
+                        <label htmlFor="customMessage">Your Custom Message <span className="text-red-700 font-bold">*</span> </label>
                         <textarea
                             id="customMessage"
                             name="customMessage"
@@ -358,11 +418,35 @@ const AddNewSpace = () => {
                         </div>
 
                     </div>
-                    <div className="flex items-center justify-center rounded hover:text-white "
+                    <div className={`flex items-center justify-center rounded hover:text-white ${isLoading ? 'bg-gray-500' : ''}`}
                         style={{ backgroundColor: 'rgb(93 93 255/var(--tw-bg-opacity))' }}
                     >
 
-                        <button className=" px-2 py-2 font-bold text-1xl w-[50%]" type="submit">Create new Space</button>
+                        <button
+                            disabled={isLoading}
+
+                            type="submit"
+                            className={`relative px-2 py-2 w-[50%] font-bold text-1xl  text-white rounded-md transition-all
+        ${isLoading ? 'cursor-not-allowed ' : ''}`}
+                        >
+                            {isLoading && (
+                                <div
+                                    className="absolute inset-0 flex items-center justify-center bg-opacity-50"
+                                >
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            )}
+                            <span className={`${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+                                Create New Space
+                            </span>
+                        </button>
+
+                        {/* <button disabled={isLoading} className={`px-2 py-2 font-bold text-1xl w-[50%]
+                                ${isLoading ? 'animate-spin' : ''}
+                            `} type="submit">Create new space</button> */}
+                        {/* <LoadingButton isLoading={isLoading} onClick={() => null} >Create new space</LoadingButton> */}
+
+
                     </div>
                 </form>
             </div>

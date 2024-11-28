@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from 'next/navigation'
+import { useRouter } from "next/navigation";
 
 
 
@@ -13,6 +14,7 @@ export interface User {
 }
 
 const NavbarProfile = () => {
+    const router = useRouter();
     const pathname = usePathname()
     const [user, setUser] = useState<User | null>(null);
     const [retryCount, setRetryCount] = useState(0); // Track retries
@@ -22,6 +24,10 @@ const NavbarProfile = () => {
             console.log("API call attempt");
             const response = await fetch("/api/get-clerk-user");
             if (response.status === 401) {
+                if (pathname !== '/') {
+
+                    router.push('/sign-in')
+                }
                 console.log("Unauthorized, retrying...");
                 throw new Error("Unauthorized");
             }
@@ -53,6 +59,7 @@ const NavbarProfile = () => {
     useEffect(() => {
         if (user) {
             sessionStorage.setItem("userSession", JSON.stringify(user));
+
         }
     }, [user]);
 

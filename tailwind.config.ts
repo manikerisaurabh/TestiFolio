@@ -25,6 +25,8 @@ const config = {
         variable: 'var(--tw-bg-opacity)', // Use a CSS variable for opacity
       },
       colors: {
+        customBlue: 'rgb(93, 93, 255)',
+        onHoverCustomBlue: 'rgb(73, 73, 204)',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
