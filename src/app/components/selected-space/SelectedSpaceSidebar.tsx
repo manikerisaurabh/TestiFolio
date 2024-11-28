@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Heart, LucideProps, MessageSquareMore, Video, WalletCards, Slack, Copy, ClipboardCheck } from "lucide-react";
+import { Heart, LucideProps, MessageSquareMore, Video, WalletCards, Code, Copy, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -23,7 +23,7 @@ const sidebarContentArray: SidebarContentType[] = [
     { label: "Video", isSelected: false, logo: Video },
     { label: "Text", isSelected: false, logo: MessageSquareMore },
     { label: "Liked", isSelected: false, logo: Heart },
-    { label: "Wall of Love", isSelected: false, logo: Slack },
+    { label: "Wall of Love", isSelected: false, logo: Code },
 ];
 
 interface SelectedSpaceSidebarProps {
@@ -78,7 +78,7 @@ const SelectedSpaceSidebar: React.FC<SelectedSpaceSidebarProps> = ({ onContentSe
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button>
-                                <Slack className="h-5 w-5 text-gray-700" />
+                                <Code className="h-5 w-5 text-gray-700" />
                                 <span className="font-semibold">Use it</span>
                             </Button>
                         </DialogTrigger>
