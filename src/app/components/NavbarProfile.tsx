@@ -19,23 +19,48 @@ const NavbarProfile = () => {
     const [user, setUser] = useState<User | null>(null);
     const [retryCount, setRetryCount] = useState(0); // Track retries
 
+    // const getUserInfo = async () => {
+    //     try {
+    //         console.log("API call attempt");
+    //         const response = await fetch("/api/get-clerk-user");
+    //         if (response.status === 401) {
+    //             if (pathname !== '/') {
+
+    //                 router.push('/sign-in')
+    //             }
+    //             console.log("Unauthorized, retrying...");
+    //             throw new Error("Unauthorized");
+    //         }
+
+    //         const data = await response.json();
+    //         setUser(data.user);
+    //     } catch (error) {
+    //         console.log("Error while fetching user data: ", error);
+
+    //         // Retry only if retryCount is less than 1
+    //         if (retryCount < 1) {
+    //             setRetryCount((prev) => prev + 1);
+    //         }
+    //     }
+    // };
+
     const getUserInfo = async () => {
         try {
             console.log("API call attempt");
             const response = await fetch("/api/get-clerk-user");
-            if (response.status === 401) {
-                if (pathname !== '/') {
 
-                    router.push('/sign-in')
+            if (!response.ok) {
+                console.log(`Error: ${response.statusText} (Status: ${response.status})`);
+                if (response.status === 401 && pathname !== "/") {
+                    router.push("/sign-in");
                 }
-                console.log("Unauthorized, retrying...");
-                throw new Error("Unauthorized");
+                throw new Error(response.statusText); // Handle non-200 responses
             }
 
             const data = await response.json();
             setUser(data.user);
         } catch (error) {
-            console.log("Error while fetching user data: ", error);
+            console.error("Error while fetching user data:", error);
 
             // Retry only if retryCount is less than 1
             if (retryCount < 1) {
