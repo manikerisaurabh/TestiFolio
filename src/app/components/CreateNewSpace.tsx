@@ -55,9 +55,7 @@ const getAllSpace = async (userId: string): Promise<Space[]> => {
             cache: 'no-store', // Ensures it fetches fresh data each time
         });
 
-        if (!res.ok) {
-            throw new Error(`Failed to fetch spaces: ${res.statusText}`);
-        }
+
         const data = await res.json();
         console.log(data)
         return data || [];
