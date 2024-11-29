@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { User } from "@/app/components/NavbarProfile";
 import Space from '../../models/space.model.js'
+import connectToDb from "@/lib/connetToDb.js";
 
 
 export async function POST(req: NextRequest) {
@@ -10,6 +11,7 @@ export async function POST(req: NextRequest) {
     const user: User = userSession ? JSON.parse(userSession.value) : null;
 
     try {
+        await connectToDb();
         const body = await req.json();
         console.log({ body });
         console.log({ user })

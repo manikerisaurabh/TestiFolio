@@ -1,9 +1,11 @@
 import Space from "@/app/models/space.model";
 import TestiMonial from "@/app/models/testimonial.model";
+import connectToDb from "@/lib/connetToDb";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     try {
+        await connectToDb();
         const body = await req.json();
         console.log({ body })
         const spaces = await Space.findOne({ owner: body.userId, _id: body.spaceId });
