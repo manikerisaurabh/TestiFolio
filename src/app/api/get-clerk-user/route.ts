@@ -1,4 +1,4 @@
-import connectToDb from "@/lib/connetToDb";
+import connectToDb from "../../../lib/connetToDb";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import User from "../../models/user.model.js";

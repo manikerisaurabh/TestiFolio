@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { User } from "@/app/components/NavbarProfile";
 import Space from '../../models/space.model.js'
-import connectToDb from "@/lib/connetToDb.js";
+import connectToDb from "../../../lib/connetToDb";
 
 
 export async function POST(req: NextRequest) {

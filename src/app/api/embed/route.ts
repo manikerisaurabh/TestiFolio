@@ -1,5 +1,5 @@
 import Testimonial from "@/app/models/testimonial.model";
-import connectToDb from "@/lib/connetToDb";
+import connectToDb from "../../../lib/connetToDb";
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);

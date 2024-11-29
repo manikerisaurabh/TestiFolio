@@ -4,7 +4,7 @@ import OverviewCard from "../components/OverviewCard";
 import CreateNewSpace from "../components/CreateNewSpace";
 import { cookies } from "next/headers";
 import Navbar from "../components/Navbar";
-import connectToDb from "@/lib/connetToDb";
+import connectToDb from "../../lib/connetToDb";
 import Space from "../models/space.model";
 
 interface User {

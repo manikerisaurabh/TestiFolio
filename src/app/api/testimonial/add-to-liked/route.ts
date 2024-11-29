@@ -1,5 +1,5 @@
 import TestiMonial from "@/app/models/testimonial.model";
-import connectToDb from "@/lib/connetToDb";
+import connectToDb from "../../../../lib/connetToDb";
 import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
     try {
