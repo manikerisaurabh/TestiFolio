@@ -228,10 +228,10 @@ const AddNewSpace = () => {
                     },
                     body: JSON.stringify(formData)
                 });
-                if (!result.ok) {
-                    toast.error("Got some error while creating space try again..")
-                }
-
+                // if (!result.ok) {
+                //     toast.error("Got some error while creating space try again..")
+                // }
+                console.log('this is result after create new space ', result)
                 const data = await result.json();
                 console.log("Response from server:", data);
                 toast.success("Congratulations! New space created successfully")
