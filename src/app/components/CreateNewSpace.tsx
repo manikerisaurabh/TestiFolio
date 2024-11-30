@@ -46,7 +46,7 @@ export interface Space {
 const getAllSpace = async (userId: string): Promise<Space[]> => {
 
     try {
-        const res = await fetch(`http://localhost:3000/api/space/get`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/space/get`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
