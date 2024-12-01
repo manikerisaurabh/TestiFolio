@@ -1,15 +1,8 @@
-import React, { useState } from "react";
-import { Heart, LucideProps, MessageSquareMore, Video, WalletCards, Code, Copy, ClipboardCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTrigger,
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React from "react";
+import { Heart, LucideProps, MessageSquareMore, Video, WalletCards, Share } from "lucide-react";
 
-} from "@/components/ui/dialog";
-import { Bounce, ToastContainer, toast } from "react-toastify";
+
 import 'react-toastify/dist/ReactToastify.css'; // Ensure toastify styles are imported
 
 export interface SidebarContentType {
@@ -23,7 +16,7 @@ const sidebarContentArray: SidebarContentType[] = [
     { label: "Video", isSelected: false, logo: Video },
     { label: "Text", isSelected: false, logo: MessageSquareMore },
     { label: "Liked", isSelected: false, logo: Heart },
-    { label: "Wall of Love", isSelected: false, logo: Code },
+    { label: "Share", isSelected: false, logo: Share },
 ];
 
 interface SelectedSpaceSidebarProps {
@@ -33,35 +26,11 @@ interface SelectedSpaceSidebarProps {
 }
 
 const SelectedSpaceSidebar: React.FC<SelectedSpaceSidebarProps> = ({ onContentSelect, selectedContent, spaceId }) => {
-    const urlToCopy = `<script type="text/javascript" src="${process.env.NEXT_PUBLIC_APP_URL}/api/embed?spaceId=${spaceId}&theme=dark" crossorigin="anonymous"></script>`;
-    const [copied, setCopied] = useState<boolean>(false)
-    const handleCopy = async () => {
-        try {
-            await navigator.clipboard.writeText(urlToCopy);
-            toast.success('Code copied to clipboard!', {
-                position: "top-right", // Position the toast
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark", // Theme of the toast
-                transition: Bounce, // Animation transition
-            });
-            setCopied(true);
 
-            setTimeout(() => {
-                setCopied(false)
-            }, 5000);
-        } catch (error) {
-            console.error('Failed to copy:', error);
-        }
-    };
 
     return (
         <div className="sticky top-28">
-            <ToastContainer />
+
             <ul className="flex flex-col justify-center items-center gap-4 lg:gap-10 px-4 py-4">
                 {sidebarContentArray.map((content, index) => (
                     <li
@@ -74,7 +43,7 @@ const SelectedSpaceSidebar: React.FC<SelectedSpaceSidebarProps> = ({ onContentSe
                         <span className="font-semibold">{content.label}</span>
                     </li>
                 ))}
-                <li className="min-w-52 items-center flex flex-row gap-3 hover:bg-purple-700 rounded hover:cursor-pointer">
+                {/* <li className="min-w-52 items-center flex flex-row gap-3 hover:bg-purple-700 rounded hover:cursor-pointer">
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button>
@@ -123,7 +92,7 @@ const SelectedSpaceSidebar: React.FC<SelectedSpaceSidebarProps> = ({ onContentSe
                         </DialogContent>
                     </Dialog>
 
-                </li>
+                </li> */}
             </ul>
         </div>
     );

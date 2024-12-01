@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import logoImage from '../../../public/logo2.png';
+import logoImage from '../../../public/logo.png';
 import NavbarProfile from './NavbarProfile';
 import Link from 'next/link';
 
