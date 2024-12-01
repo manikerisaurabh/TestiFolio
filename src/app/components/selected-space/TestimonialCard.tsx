@@ -1,14 +1,17 @@
+import { revalidatePath } from 'next/cache'; // Import revalidatePath
+
 import { Testimonial } from '@/app/space/[space-name]/page';
 import { Heart } from 'lucide-react';
 import React from 'react';
 import StarRatings from 'react-star-ratings';
+import { Bounce, toast, ToastContainer } from 'react-toastify';
 
 interface TestimonialCardProps {
     testimonial: Testimonial;
 }
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
-    const addToLike = async () => {
+    const addToLike = async (isLiked: boolean) => {
         try {
             const response = await fetch('/api/testimonial/add-to-liked', {
                 method: 'POST',
@@ -19,7 +22,42 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
             });
             if (!response.ok) {
                 console.log('Error while adding into liked');
+            } else {
+                if (!isLiked) {
+                    toast.success('Testimonial added to liked', {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Bounce,
+                    });
+                } else {
+                    toast.warn('Testimonial removed from liked', {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Bounce,
+                    });
+                }
+                setTimeout(() => {
+                    window.location.reload();
+                    // revalidatePath(`/space/${testimonial.spaceId}`);
+                }, 500);
             }
+            setTimeout(() => {
+                revalidatePath(`/space/${testimonial.spaceId}`);
+            }, 500);
+
+
         } catch (error) {
             console.log(error);
         }
@@ -28,6 +66,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
     return (
         <div className="flex flex-col gap-6">
             {/* Header Section */}
+            <ToastContainer />
             <div className="flex justify-between items-center">
                 <span className="text-white font-medium text-sm sm:text-base">
                     Testimonial
@@ -35,7 +74,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
                 <button
                     className="text-red-500 hover:text-red-600 focus:outline-none"
                     aria-label="Like Testimonial"
-                    onClick={addToLike}
+                    onClick={() => { addToLike(testimonial.isLiked) }}
                 >
                     {testimonial.isLiked ? <Heart fill="red" /> : <Heart />}
                 </button>

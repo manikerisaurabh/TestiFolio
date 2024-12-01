@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { Space } from "@/app/components/CreateNewSpace";
 import SelectedSpaceRightBox from "@/app/components/selected-space/SelectedSpaceRightBox";
 import { User } from "@/app/components/NavbarProfile";
+import { WalletCards } from "lucide-react";
 
 export interface Testimonial {
     imageUrl: string;
@@ -31,7 +32,11 @@ const SpaceInformation: React.FC = () => {
     const pathSegments = pathname.split("/").filter(Boolean);
     const [space, spaceId] = pathSegments;
     const [selectedContent, setSelectedContent] =
-        useState<SidebarContentType | null>(null);
+        useState<SidebarContentType | null>({
+            label: "All",
+            isSelected: true,
+            logo: WalletCards,
+        });
     const [currentSpace, setCurrentSpace] = useState<Space>({
         spaceName: "",
         spaceLogo: "",
@@ -62,22 +67,25 @@ const SpaceInformation: React.FC = () => {
             }
             const data = await res.json();
             setCurrentSpace(data.space);
-            filterTestimonials(data.testimonials);
             setTestimonials(data.testimonials);
+            setFilteredTestimonials(data.testimonials); // Directly set all testimonials
         } catch (error) {
-            console.error("Error fetching spaces:", error);
+            console.error("Error fetching testimonials:", error);
         } finally {
             setIsLoading(false);
         }
     };
+
 
     const handleContentSelection = (content: SidebarContentType) => {
         filterTestimonials(content.label);
         setSelectedContent(content);
     };
 
-    const filterTestimonials = (filterType: string) => {
-        if (filterType === "Text") {
+    const filterTestimonials = (filterType: string | Testimonial[]) => {
+        if (Array.isArray(filterType)) {
+            setFilteredTestimonials(filterType); // Set directly when called with an array
+        } else if (filterType === "Text") {
             const data = testimonials?.filter(
                 (testimonial) => testimonial.testimonialType === "text"
             );
@@ -94,9 +102,10 @@ const SpaceInformation: React.FC = () => {
             );
             setFilteredTestimonials(data);
         } else {
-            setFilteredTestimonials(testimonials);
+            setFilteredTestimonials(testimonials); // Default case to show all
         }
     };
+
 
     const getUser = async () => {
         const userData = sessionStorage.getItem("userSession");
@@ -126,22 +135,22 @@ const SpaceInformation: React.FC = () => {
             <SelectedSpaceTopBar
                 spaceName={currentSpace.spaceName}
                 spaceLogo={currentSpace.spaceLogo}
-                textCount={4}
-                videoCount={5}
+                textCount={testimonials ? testimonials?.filter(testimonial => testimonial.testimonialType === "text").length : 0}
+                videoCount={testimonials ? testimonials.filter(testimonial => testimonial.testimonialType === "video").length : 0}
             />
             <div
                 className=" bg-slate-700 w-full sticky top-28"
                 style={{ height: "1.2px" }}
             ></div>
             <div className="flex flex-col lg:flex-row lg:h-96 lg:top-16">
-                <div className="border-b-2 lg:border-b-0 lg:border-r-2 w-full lg:w-auto">
+                <div className="border-b-2 lg:border-b-0 lg:border-r-2 w-full lg:w-auto ">
                     <SelectedSpaceSidebar
                         onContentSelect={handleContentSelection}
                         selectedContent={selectedContent}
                         spaceId={currentSpace._id}
                     />
                 </div>
-                <div className="flex items-center justify-center w-full">
+                <div className=" border-b-2 lg:border-b-0 lg:border-r-2  lg:w-full ">
                     {isLoading ? (
                         <div className="w-full flex flex-col items-center">
                             {/* Skeleton Loader */}
@@ -157,6 +166,8 @@ const SpaceInformation: React.FC = () => {
                                 testimonials={filteredTestimonials}
                                 userId={user?.id}
                                 spaceId={spaceId}
+                                sectionType={selectedContent?.label ? selectedContent.label : null}
+
                             />
                         )
                     )}

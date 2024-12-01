@@ -6,11 +6,15 @@ import Image from "next/image";
 import appLogo from "../../../../public/logo.png";
 import { PencilLine, Video } from "lucide-react";
 import StarRatings from "react-star-ratings";
+import { useRouter } from "next/navigation";
+import "react-toastify/dist/ReactToastify.css"; // Ensure you import the CSS
+
 
 
 
 import { CldUploadWidget, CloudinaryUploadWidgetInfo } from "next-cloudinary";
 import { CloudinaryUploadResponse } from "@/app/add-new-space/page";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 interface Space {
     customMessage: string;
@@ -35,7 +39,7 @@ interface FormData {
     testimonialType: string
 }
 const WriteNewTestimonial = () => {
-
+    const router = useRouter();
     const pathname = usePathname();
     const pathSegments = pathname.split("/").filter(Boolean);
     const [userId, rawSpaceName] = pathSegments;
@@ -141,26 +145,95 @@ const WriteNewTestimonial = () => {
         setshowAdd(true)
     }
 
+    const validateTestimonial = () => {
+        let errorCount = 0;
+        if (formData.message.length < 30) {
+            toast.error('Testimonial must be long than 30 letters', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+            errorCount++;
+        }
+
+        if (formData.userName == "") {
+            toast.error('Please enter your name', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+            errorCount++;
+        }
+        if (formData.userEmail == "") {
+            toast.error('Please enter your email', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+            errorCount++;
+        }
+
+        if (errorCount == 0) {
+            return true;
+        }
+        return false;
+    }
     const handleSubmiteTestimonial = async () => {
         console.log('this is formdata :', formData)
-        try {
-            setIsLoading(true)
-            const response = await fetch('/api/testimonial/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
+        if (validateTestimonial()) {
+            try {
+                setIsLoading(true)
+                const response = await fetch('/api/testimonial/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                if (response.ok) {
+                    toast.success('Testimonial submited successfully', {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Bounce,
+                    });
+                }
+                const data = await response.json();
+                console.log({ data })
+                setTimeout(() => {
+                    router.push('/thank-you')
+                }, 5000);
 
-            const data = await response.json();
-            console.log({ data })
-
-        } catch (error) {
-            console.log(error)
-        } finally {
-            setIsLoading(false);
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setIsLoading(false);
+            }
         }
+
     }
 
     return (
@@ -173,6 +246,7 @@ const WriteNewTestimonial = () => {
                 <Image src={appLogo} height={60} width={60} alt="App Logo" />
                 <strong className="text-slate-600 text-3xl md:text-4xl">TestiFolio</strong>
             </div>
+            <ToastContainer />
 
             {/* Main Content */}
             {showAdd == false ?

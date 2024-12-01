@@ -62,7 +62,7 @@ const SelectedSpaceSidebar: React.FC<SelectedSpaceSidebarProps> = ({ onContentSe
     return (
         <div className="sticky top-28">
             <ToastContainer />
-            <ul className="flex flex-col justify-center items-center gap-8 px-4 py-4">
+            <ul className="flex flex-col justify-center items-center gap-4 lg:gap-10 px-4 py-4">
                 {sidebarContentArray.map((content, index) => (
                     <li
                         key={index}

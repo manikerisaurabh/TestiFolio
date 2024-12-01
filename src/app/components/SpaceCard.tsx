@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { Space } from "./CreateNewSpace";
+import React from "react";
+import { CurrSpace } from "./CreateNewSpace";
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 // import { useSelectedSpace } from "./SelectedSpaceContext";
+import { EllipsisVertical } from 'lucide-react';
+
 import { useSelectedSpace } from "@/context/SelectedSpaceContext";
 import Link from "next/link";
 
 interface SpaceCardProps {
-    spaces: Space[];
+    spaces: CurrSpace[];
 }
 
 const SpaceCard: React.FC<SpaceCardProps> = ({ spaces }) => {
@@ -17,15 +19,11 @@ const SpaceCard: React.FC<SpaceCardProps> = ({ spaces }) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { selectedSpace, setSelectedSpace } = useSelectedSpace();
 
-    useEffect(() => {
-        console.log("SpaceCard component mounted");
-    }, []);
 
-    // const addNewSpaceButtonClickHandle = () => {
-    //     router.replace("/add-new-space"); // Navigate to /add-new-space
-    // };
 
-    const viewSpaceInfoClickHandle = (space: Space) => {
+
+
+    const viewSpaceInfoClickHandle = (space: CurrSpace) => {
         setSelectedSpace(space); // Update the context
         router.push(`/space/${space._id}`);
     };
@@ -72,7 +70,7 @@ const SpaceCard: React.FC<SpaceCardProps> = ({ spaces }) => {
                                     {space.spaceName}
                                 </button>
                             </div>
-                            <h1 className="text-gray-400">Changes</h1>
+                            <h1 className="text-gray-400"><EllipsisVertical /></h1>
                         </div>
 
                         {/* Second Row */}
@@ -80,8 +78,11 @@ const SpaceCard: React.FC<SpaceCardProps> = ({ spaces }) => {
                             className="flex w-full justify-between font-semibold"
                             style={{ color: "rgb(155 169 180)" }}
                         >
-                            <h2>Videos : 2</h2>
-                            <h2>Text : 5</h2>
+                            <h2>
+                                Videos: {space.testimonials.filter(testimonial => testimonial.testimonialType === "video").length}
+                            </h2>
+
+                            <h2>Text : {space.testimonials.filter(testimonial => testimonial.testimonialType === "text").length}</h2>
                         </div>
                     </div>
                 ))}

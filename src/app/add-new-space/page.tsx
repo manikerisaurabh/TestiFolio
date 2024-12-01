@@ -247,285 +247,295 @@ const AddNewSpace = () => {
 
 
     return (
-        <div className="min-w-[100vh] min-h-[100vh] flex flex-row justify-center px-24 py-32 rounded">
-            <Navbar />
-            <div className="bg-white min-w-[60%] rounded px-8 py-8 border-r-2">
+        <>
 
 
-                <div className="flex flex-col justify-center items-center">
-                    <ToastContainer
-                    />
-                    <h1 className={`${ibmPlexSans.className} text-4xl font-extrabold`}
-                        style={{ fontWeight: 900 }}
+
+
+
+
+            {/* this is  main -- responsive*/}
+            <div className="min-w-full min-h-screen flex flex-col px-4 py-8 sm:px-8 sm:py-16 md:flex-row md:px-24 md:py-32 md:justify-center  rounded mt-12">
+                {/* Form Section */}
+                <Navbar />
+                <div className="bg-white w-full md:w-[60%] rounded px-6 py-8 border-r-0 md:border-r-2 shadow-md">
+                    <div className="flex flex-col justify-center items-center mb-8">
+                        <ToastContainer />
+                        <h1
+                            className={` ${ibmPlexSans.className} text-3xl md:text-4xl font-extrabold text-center`}
+                            style={{ fontWeight: 900 }}
+                        >
+                            Create a new Space
+                        </h1>
+                        <p className="text-center text-gray-600">
+                            After the Space is created, it will generate a dedicated page for
+                            collecting testimonials.
+                        </p>
+                    </div>
+                    <form
+                        onSubmit={handleFormSubmit}
+                        className="flex flex-col justify-center px-4 sm:px-8 py-4"
                     >
-                        Create a new Space
-                    </h1>
-                    <p>
-                        After the Space is created, it will generate a dedicated page for
-                        collecting testimonials.
-                    </p>
-                </div>
-                <form onSubmit={handleFormSubmit} className="flex flex-col justify-center px-8 py-8">
-                    {/* Space Name Input */}
-                    <div className="flex flex-col justify-start mb-4">
-                        <label htmlFor="spaceName">
-                            Space Name <span className="text-red-700 font-bold">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            id="spaceName"
-                            name="spaceName"
-                            placeholder="Enter space name"
-                            className="border border-slate-300 px-2 py-2 rounded"
-                            value={formData.spaceName}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-                    <input
-                        className="text-slate-500"
-                        type="text"
-                        readOnly
-                        value={`Public url will be : saurabh/${user?.id}/${formData.spaceName.replace(/\s+/g, '-')}`}
-                    />
-
-                    {/* File Upload with Image Preview */}
-                    <div className="flex flex-col justify-start mb-4">
-                        <label htmlFor="spaceLogo">Space Logo <span className="text-red-700 font-bold">*</span></label>
-                        <div className="flex items-center gap-4 mt-2">
-                            <span
-                                className="h-24 w-24 border border-slate-300 rounded-full flex items-center justify-center bg-gray-100"
-                            >
-                                {formData.spaceLogo ? (
-                                    <img
-                                        src={formData.spaceLogo}
-                                        alt="Selected Space Logo"
-                                        className="h-24 w-24 object-contain rounded-full"
-                                    />
-                                ) : (
-                                    <p className="text-center text-sm text-gray-500">
-                                        No image selected
-                                    </p>
-                                )}
-                            </span>
-
-                            <CldUploadWidget
-                                uploadPreset="testi_folio"
-                                onSuccess={(result) => {
-                                    if (result.info) {
-                                        console.log('this is result info ', result.info)
-                                        setResource(result?.info);
-
-                                    }
-                                }}
-                                onQueuesEnd={(result, { widget }) => {
-                                    widget.close();
-                                }}
-                            >
-                                {({ open }) => {
-                                    function handleOnClick() {
-                                        setResource(undefined);
-                                        open();
-                                    }
-                                    return (
-                                        <button onClick={handleOnClick}>
-                                            Upload an Image
-                                        </button>
-                                    );
-                                }}
-                            </CldUploadWidget>
-
-                            {/* <input
-                                ref={fileInputRef}
-                                title="change"
-                                type="file"
-                                id="spaceLogo"
-                                accept=".png, .jpeg, .jpg, .svg"
-                                onChange={handleFileChange}
-                                className="border border-slate-300 px-2 py-2 rounded cursor-pointer"
-                            /> */}
-                            {imagePreview && (
-                                <button
-                                    type="button"
-                                    onClick={deleteSelectedImage}
-                                    className="p-1 bg-red-500 text-white rounded"
-                                >
-                                    <Trash2 width={20} height={20} />
-                                </button>
-                            )}
+                        {/* Space Name Input */}
+                        <div className="flex flex-col justify-start mb-4">
+                            <label htmlFor="spaceName">
+                                Space Name <span className="text-red-700 font-bold">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="spaceName"
+                                name="spaceName"
+                                placeholder="Enter space name"
+                                className="border border-slate-300 px-2 py-2 rounded"
+                                value={formData.spaceName}
+                                onChange={handleInputChange}
+                            />
                         </div>
-                    </div>
-
-                    {/* Header Title */}
-                    <div className="flex flex-col justify-start mb-4">
-                        <label htmlFor="headerTitle">Header Title <span className="text-red-700 font-bold">*</span></label>
                         <input
+                            className="text-slate-500 text-sm"
                             type="text"
-                            id="headerTitle"
-                            name="headerTitle"
-                            placeholder="Enter header title"
-                            className="border border-slate-300 px-2 py-2 rounded"
-                            value={formData.headerTitle}
-                            onChange={handleInputChange}
+                            readOnly
+                            value={`Public URL will be: ${process.env.NEXT_PUBLIC_APP_URL}/${user?.id}/${formData.spaceName.replace(
+                                /\s+/g,
+                                "-"
+                            )}`}
                         />
-                    </div>
 
-                    {/* Custom Message */}
-                    <div className="flex flex-col justify-start mb-4">
-                        <label htmlFor="customMessage">Your Custom Message <span className="text-red-700 font-bold">*</span> </label>
-                        <textarea
-                            id="customMessage"
-                            name="customMessage"
-                            placeholder="Enter your custom message"
-                            className="border border-slate-300 px-2 py-2 rounded"
-                            value={formData.customMessage}
-                            onChange={handleInputChange}
-                        />
-                    </div>
+                        {/* File Upload with Image Preview */}
+                        <div className="flex flex-col justify-start mb-4">
+                            <label htmlFor="spaceLogo">
+                                Space Logo <span className="text-red-700 font-bold">*</span>
+                            </label>
+                            <div className="flex items-center gap-4 mt-2">
+                                <span className="h-24 w-24 border border-slate-300 rounded-full flex items-center justify-center bg-gray-100">
+                                    {formData.spaceLogo ? (
+                                        <img
+                                            src={formData.spaceLogo}
+                                            alt="Selected Space Logo"
+                                            className="h-24 w-24 object-contain rounded-full"
+                                        />
+                                    ) : (
+                                        <p className="text-center text-sm text-gray-500">
+                                            No image selected
+                                        </p>
+                                    )}
+                                </span>
+                                <CldUploadWidget
+                                    uploadPreset="testi_folio"
+                                    onSuccess={(result) => {
+                                        if (result.info) {
+                                            console.log("this is result info ", result.info);
+                                            setResource(result?.info);
+                                        }
+                                    }}
+                                    onQueuesEnd={(result, { widget }) => {
+                                        widget.close();
+                                    }}
+                                >
+                                    {({ open }) => {
+                                        function handleOnClick() {
+                                            setResource(undefined);
+                                            open();
+                                        }
+                                        return (
+                                            <button
+                                                type="button"
+                                                className="bg-blue-500 text-white px-4 py-2 rounded"
+                                                onClick={handleOnClick}
+                                                style={{ backgroundColor: 'rgb(93 93 255)' }}
+                                            >
+                                                Upload an Image
+                                            </button>
+                                        );
+                                    }}
+                                </CldUploadWidget>
 
-                    {/* Questions */}
-                    <div className="flex flex-col justify-start mb-4">
-                        <label htmlFor="questions">Questions</label>
-                        {formData.questions.map((question, index) => (
-                            <div key={index} className="flex flex-row items-center gap-4">
-                                <Grip className="mb-2" height={20} width={20} />
-                                <input
-                                    key={index}
-                                    type="text"
-                                    name="questions"
-                                    placeholder={`Question ${index + 1}`}
-                                    className="border border-slate-300 px-2 py-2 rounded mb-2 w-full"
-                                    value={question}
-                                    onChange={(e) => handleInputChange(e, index)}
-                                />
+                                {imagePreview && (
+                                    <button
+                                        type="button"
+                                        onClick={deleteSelectedImage}
+                                        className="p-1 bg-red-500 text-white rounded"
+                                    >
+                                        <Trash2 width={20} height={20} />
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Header Title */}
+                        <div className="flex flex-col justify-start mb-4">
+                            <label htmlFor="headerTitle">
+                                Header Title <span className="text-red-700 font-bold">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="headerTitle"
+                                name="headerTitle"
+                                placeholder="Enter header title"
+                                className="border border-slate-300 px-2 py-2 rounded"
+                                value={formData.headerTitle}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+
+                        {/* Custom Message */}
+                        <div className="flex flex-col justify-start mb-4">
+                            <label htmlFor="customMessage">
+                                Your Custom Message{" "}
+                                <span className="text-red-700 font-bold">*</span>
+                            </label>
+                            <textarea
+                                id="customMessage"
+                                name="customMessage"
+                                placeholder="Enter your custom message"
+                                className="border border-slate-300 px-2 py-2 rounded"
+                                value={formData.customMessage}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+
+                        {/* Questions */}
+                        <div className="flex flex-col justify-start mb-4">
+                            <label htmlFor="questions">Questions</label>
+                            {formData.questions.map((question, index) => (
+                                <div key={index} className="flex flex-row items-center gap-4">
+                                    <Grip className="mb-2" height={20} width={20} />
+                                    <input
+                                        key={index}
+                                        type="text"
+                                        name="questions"
+                                        placeholder={`Question ${index + 1}`}
+                                        className="border border-slate-300 px-2 py-2 rounded mb-2 w-full"
+                                        value={question}
+                                        onChange={(e) => handleInputChange(e, index)}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => removeQuestion(index)}
+                                        className="p-1 rounded"
+                                    >
+                                        <Trash2 height={20} width={20} className="mb-2" />
+                                    </button>
+                                </div>
+                            ))}
+                            <div>
                                 <button
                                     type="button"
-                                    onClick={() => removeQuestion(index)}
-                                    className="p-1 rounded"
+                                    onClick={addQuestionField}
+                                    className="flex flex-row gap-3 items-center"
                                 >
-                                    <Trash2 height={20} width={20} className="mb-2" />
+                                    <CirclePlus height={15} width={15} />
+                                    <span>Add Question</span>
                                 </button>
                             </div>
-                        ))}
-                        <div className="px-8 pt-4">
-                            <button
-                                type="button"
-                                onClick={addQuestionField}
-                                className="flex flex-row gap-3 items-center"
-                            >
-                                <CirclePlus height={15} width={15} />
-                                <span>Add Question</span>
-                            </button>
                         </div>
 
-                    </div>
-                    <div className={`flex items-center justify-center rounded hover:text-white ${isLoading ? 'bg-gray-500' : ''}`}
-                        style={{ backgroundColor: 'rgb(93 93 255/var(--tw-bg-opacity))' }}
-                    >
+                        {/* Submit Button */}
+                        <div className={`flex items-center justify-center rounded hover:text-white ${isLoading ? 'bg-gray-500' : ''}`}
+                            style={{ backgroundColor: 'rgb(93 93 255)' }}
+                        >
+                            <button
+                                disabled={isLoading}
 
-                        <button
-                            disabled={isLoading}
-
-                            type="submit"
-                            className={`relative px-2 py-2 w-[50%] font-bold text-1xl  text-white rounded-md transition-all
+                                type="submit"
+                                className={`relative px-2 py-2 w-[50%] font-bold text-1xl  text-white rounded-md transition-all
         ${isLoading ? 'cursor-not-allowed ' : ''}`}
-                        >
-                            {isLoading && (
-                                <div
-                                    className="absolute inset-0 flex items-center justify-center bg-opacity-50"
-                                >
-                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                </div>
+                            >
+                                {isLoading && (
+                                    <div
+                                        className="absolute inset-0 flex items-center justify-center bg-opacity-50"
+                                    >
+                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    </div>
+                                )}
+                                <span className={`${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+                                    Create New Space
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                {/* Live Preview Section */}
+
+                <div className="bg-white min-w-[40%] rounded px-4 border-l-2">
+                    <div
+                        className=" sticky max-w-48 rounded flex items-center justify-center py-1 mt-10"
+                        style={{
+                            backgroundColor: 'rgb(167 243 208)',
+                            color: 'rgb(5 150 105)',
+                            borderRadius: '20px',
+                        }}
+                    >
+                        <p className="font-bold items-center">Live Preview</p>
+                    </div>
+
+                    <div className="flex flex-col px-8 py-16 justify-center border border-slate-400 rounded">
+                        {/* Logo Preview */}
+                        <div className="flex justify-center items-center mb-4">
+                            {formData.spaceLogo ? (
+
+                                <img
+                                    src={formData.spaceLogo}
+                                    alt="Selected Space Logo"
+                                    className="h-24 w-24 object-contain rounded-full"
+                                />
+                            ) : (
+                                <Image src={defaultImage} height={80} width={80} alt="Default Space Logo" />
                             )}
-                            <span className={`${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-                                Create New Space
-                            </span>
-                        </button>
+                        </div>
 
-                        {/* <button disabled={isLoading} className={`px-2 py-2 font-bold text-1xl w-[50%]
-                                ${isLoading ? 'animate-spin' : ''}
-                            `} type="submit">Create new space</button> */}
-                        {/* <LoadingButton isLoading={isLoading} onClick={() => null} >Create new space</LoadingButton> */}
+                        {/* Header Title Preview */}
+                        <div className="mb-4">
+                            <h1 className={`${robotoSlab.className} text-2xl font-extrabold text-center`}
+                                style={{ color: 'rgb(70 89 120)', fontWeight: 'bolder' }}
+                            >
+                                {formData.headerTitle || 'Header goes here...'}
+                            </h1>
+                        </div>
 
+                        {/* Custom Message Preview */}
+                        <div className="mb-4">
+                            <h2 className="text-center text-gray-600"
+                                style={{ color: 'rgb(112 125 134)' }}
+                            >
+                                {formData.customMessage || 'Your custom message goes here...'}
+                            </h2>
+                        </div>
 
-                    </div>
-                </form>
-            </div>
-            <div className="bg-white min-w-[40%] rounded px-4 border-l-2">
-                <div
-                    className=" sticky max-w-48 rounded flex items-center justify-center py-1 mt-10"
-                    style={{
-                        backgroundColor: 'rgb(167 243 208)',
-                        color: 'rgb(5 150 105)',
-                        borderRadius: '20px',
-                    }}
-                >
-                    <p className="font-bold items-center">Live Preview</p>
-                </div>
+                        {/* Questions Preview */}
+                        <div className="px-4 flex gap-2 flex-col min-h-64">
+                            <h3 className="font-bold text-lg mb-2"
+                                style={{ color: 'rgb(85 89 95)', fontWeight: 'bolder' }}
+                            >QUESTIONS</h3>
+                            <div className="min-w-3 max-w-12 bg-black h-2 ml-1"
+                                style={{ backgroundColor: 'rgb(93, 93, 255)' }}
+                            ></div>
+                            <ul className="list-disc list-inside space-y-2">
+                                {formData.questions.map((question, index) => (
+                                    <li key={index} className="text-gray-700 text-xl font-medium"
+                                        style={{ color: 'rgb(112 125 134)' }}
+                                    >
+                                        {question || `Question ${index + 1}`}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
 
-                <div className="flex flex-col px-8 py-16 justify-center border border-slate-400 rounded">
-                    {/* Logo Preview */}
-                    <div className="flex justify-center items-center mb-4">
-                        {formData.spaceLogo ? (
-
-                            <img
-                                src={formData.spaceLogo}
-                                alt="Selected Space Logo"
-                                className="h-24 w-24 object-contain rounded-full"
-                            />
-                        ) : (
-                            <Image src={defaultImage} height={80} width={80} alt="Default Space Logo" />
-                        )}
-                    </div>
-
-                    {/* Header Title Preview */}
-                    <div className="mb-4">
-                        <h1 className={`${robotoSlab.className} text-2xl font-extrabold text-center`}
-                            style={{ color: 'rgb(70 89 120)', fontWeight: 'bolder' }}
-                        >
-                            {formData.headerTitle || 'Header goes here...'}
-                        </h1>
-                    </div>
-
-                    {/* Custom Message Preview */}
-                    <div className="mb-4">
-                        <h2 className="text-center text-gray-600"
-                            style={{ color: 'rgb(112 125 134)' }}
-                        >
-                            {formData.customMessage || 'Your custom message goes here...'}
-                        </h2>
-                    </div>
-
-                    {/* Questions Preview */}
-                    <div className="px-4 flex gap-2 flex-col min-h-64">
-                        <h3 className="font-bold text-lg mb-2"
-                            style={{ color: 'rgb(85 89 95)', fontWeight: 'bolder' }}
-                        >QUESTIONS</h3>
-                        <div className="min-w-3 max-w-12 bg-black h-2 ml-1"
-                            style={{ backgroundColor: 'rgb(93, 93, 255)' }}
-                        ></div>
-                        <ul className="list-disc list-inside space-y-2">
-                            {formData.questions.map((question, index) => (
-                                <li key={index} className="text-gray-700 text-xl font-medium"
-                                    style={{ color: 'rgb(112 125 134)' }}
-                                >
-                                    {question || `Question ${index + 1}`}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="flex flex-col px-10 gap-2">
-                        <button className="px-2 py-2 rounded flex flex-row items-center justify-center gap-2 text-white"
-                            style={{ backgroundColor: 'rgb(93, 93, 255)', fontWeight: 700 }}
-                        > <Video /> Record a video</button>
-                        <button className="px-2 py-2 rounded flex flex-row items-center justify-center gap-6 text-white"
-                            style={{ backgroundColor: 'rgb(51 54 58)', fontWeight: 700 }}
-                        > <PencilLine /> Send a text</button>
+                        <div className="flex flex-col px-10 gap-2">
+                            <button className="px-2 py-2 rounded flex flex-row items-center justify-center gap-2 text-white"
+                                style={{ backgroundColor: 'rgb(93, 93, 255)', fontWeight: 700 }}
+                            > <Video /> Record a video</button>
+                            <button className="px-2 py-2 rounded flex flex-row items-center justify-center gap-6 text-white"
+                                style={{ backgroundColor: 'rgb(51 54 58)', fontWeight: 700 }}
+                            > <PencilLine /> Send a text</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        </div>
+            </div>
+        </>
+
     );
 };
 

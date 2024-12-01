@@ -54,7 +54,7 @@ const NavbarProfile = () => {
                 if (response.status === 401 && pathname !== "/") {
                     router.push("/sign-in");
                 }
-                throw new Error(response.statusText); // Handle non-200 responses
+
             }
 
             const data = await response.json();

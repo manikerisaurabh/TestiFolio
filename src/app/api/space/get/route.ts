@@ -6,11 +6,13 @@ export async function POST(req: NextRequest) {
     try {
         await connectToDb();
         const body = await req.json();
-        const spaces = await Space.find({ owner: body.userId });
+        const spaces = await Space.find({ owner: body.userId }).populate("testimonials");
 
         if (!spaces) {
             return NextResponse.json({ message: "No space available" });
         }
+
+        console.log('spaces at get-space ', spaces)
 
         return NextResponse.json(spaces);
     } catch (error) {

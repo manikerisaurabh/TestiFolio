@@ -73,7 +73,8 @@ export async function POST(req: NextRequest) {
                 headerTitle: body.headerTitle,
                 customMessage: body.customMessage,
                 questions: body.questions,
-                owner: user.id
+                owner: user.id,
+                testimonials: []
             });
 
             // Save the space to the database

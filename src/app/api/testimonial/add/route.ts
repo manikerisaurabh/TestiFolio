@@ -5,16 +5,22 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     try {
-        console.log('api reached at testimonial/add')
+        console.log('API reached at testimonial/add');
         await connectToDb();
+
+        // Parse the request body
         const body = await req.json();
 
+        // Find the corresponding space by ID
         const space = await Space.findOne({ _id: body.spaceName });
 
         if (!space) {
-            return NextResponse.json({ error: "NO space found " }, { status: 404 });
+            return NextResponse.json({ error: "No space found" }, { status: 404 });
         }
 
+        console.log("Space found:", space);
+
+        // Create a new testimonial
         const newTestimonial = new TestiMonial({
             message: body.message,
             imageUrl: body.imageUrl,
@@ -26,12 +32,27 @@ export async function POST(req: NextRequest) {
             spaceId: space._id,
             testimonialType: body.testimonialType
         });
+
+        // Save the testimonial
         await newTestimonial.save();
-        return NextResponse.json({ success: "new testimonial submited" }, { status: 201 })
+        console.log("New testimonial created with ID:", newTestimonial._id);
 
+        // Push the testimonial ID into the space's testimonials array
+        const updatedSpace = await Space.findByIdAndUpdate(
+            space._id,
+            { $push: { testimonials: newTestimonial._id } },
+            { new: true } // Ensure the updated document is returned
+        );
 
+        console.log("Updated Space:", updatedSpace);
+
+        if (!updatedSpace) {
+            return NextResponse.json({ error: "Failed to update space with testimonial" }, { status: 500 });
+        }
+
+        return NextResponse.json({ success: "New testimonial submitted and linked to space" }, { status: 201 });
     } catch (error) {
-        console.log(error)
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
+        console.error(error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

@@ -42,54 +42,60 @@ const SelectedSpaceTopBar: React.FC<SelectedSpaceTopBarProps> = ({
             </div>
 
             {/* Right Section */}
-            <div className="flex flex-col md:flex-row gap-6 md:gap-6 items-start md:items-center">
-                {/* Video Credit */}
-                <div className="flex flex-row gap-2 items-center">
-                    <div className="flex flex-row gap-2 items-center">
-                        <p className="text-gray-500">
-                            <Video />
-                        </p>
-                        <p className="font-semibold text-gray-500 text-sm md:text-base">
-                            Video Credit
-                        </p>
-                    </div>
-                    <span className="font-bold text-lg md:text-xl ml-2">
-                        {isLoading ? (
-                            <div className="h-6 w-10 bg-gray-300 rounded animate-pulse"></div>
-                        ) : (
-                            videoCount
-                        )}
-                    </span>
-                </div>
+            <div className="flex flex-col sm:flex-row md:flex-row gap-6 md:gap-6  ">
+                <div className='flex flex-row items-center justify-between gap-5'>
 
-                {/* Text Credit */}
-                <div className="flex flex-row gap-2 items-center">
-                    <div className="flex flex-row gap-2 items-center">
-                        <p className="text-gray-500">
-                            <PenLine />
-                        </p>
-                        <p className="font-semibold text-gray-500 text-sm md:text-base">
-                            Text Credit
-                        </p>
-                    </div>
-                    <span className="font-bold text-lg md:text-xl ml-2">
-                        {isLoading ? (
-                            <div className="h-6 w-10 bg-gray-300 rounded animate-pulse"></div>
-                        ) : (
-                            textCount
-                        )}
-                    </span>
-                </div>
 
+                    {/* Video Credit */}
+                    <div className="flex flex-row gap-2 items-center">
+                        <div className="flex flex-row gap-2 items-center">
+                            <p className="text-gray-500">
+                                <Video />
+                            </p>
+                            <p className="font-semibold text-gray-500 text-sm md:text-base">
+                                Video Credit
+                            </p>
+                        </div>
+                        <span className="font-bold text-lg md:text-xl ml-2">
+                            {isLoading ? (
+                                <div className="h-6 w-10 bg-gray-300 rounded animate-pulse"></div>
+                            ) : (
+                                videoCount
+                            )}
+                        </span>
+                    </div>
+
+                    {/* Text Credit */}
+                    <div className="flex flex-row gap-2 items-center">
+                        <div className="flex flex-row gap-2 items-center">
+                            <p className="text-gray-500">
+                                <PenLine />
+                            </p>
+                            <p className="font-semibold text-gray-500 text-sm md:text-base">
+                                Text Credit
+                            </p>
+                        </div>
+                        <span className="font-bold text-lg md:text-xl ml-2">
+                            {isLoading ? (
+                                <div className="h-6 w-10 bg-gray-300 rounded animate-pulse"></div>
+                            ) : (
+                                textCount
+                            )}
+                        </span>
+                    </div>
+                </div>
                 {/* Edit Space Button */}
                 <button
-                    className={`flex flex-row gap-3 items-center px-4 py-2 border rounded font-semibold ${isLoading ? 'bg-gray-300 text-gray-400 animate-pulse' : 'bg-white text-black'
+                    className={`flex flex-row gap-2 items-center px-3 py-1 hover:opacity-50 backdrop-blur-sm cursor-not-allowed  rounded font-medium ${isLoading ? 'bg-gray-300 text-gray-400 animate-pulse' : ' text-black items-center justify-center'
                         }`}
-                    disabled={isLoading}
+                    disabled={true}
                 >
-                    <Pencil />
-                    {isLoading ? '' : 'Edit Space'}
+                    <div className='bg-white flex flex-row gap-2 items-center px-4 py-2 rounded sm:w-full'>
+                        <Pencil /> {/* Adjust the size of the icon if needed */}
+                        {isLoading ? '' : 'Edit Space'}
+                    </div>
                 </button>
+
             </div>
         </div>
     );

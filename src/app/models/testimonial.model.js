@@ -1,31 +1,31 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const testiMonialSchema = new mongoose.Schema({
     message: {
         type: String,
-        required: true
+        required: true,
     },
     imageUrl: {
-        type: String
+        type: String,
     },
     rating: {
         type: String,
-        required: true
+        required: true,
     },
     userName: {
         type: String,
-        required: true
+        required: true,
     },
     userEmail: {
         type: String,
-        required: true
+        required: true,
     },
     userImage: {
         type: String,
     },
     permissionToShare: {
         type: Boolean,
-        required: true
+        required: true,
     },
     spaceId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -33,12 +33,16 @@ const testiMonialSchema = new mongoose.Schema({
     },
     isLiked: {
         type: Boolean,
-        default: false
+        default: false,
     },
     testimonialType: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now(),
+    },
 });
 
 const TestiMonial = mongoose.models.TestiMonial || mongoose.model("TestiMonial", testiMonialSchema);
